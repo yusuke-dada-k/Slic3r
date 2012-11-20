@@ -296,11 +296,16 @@ sub make_loops {
                 next CYCLE;
             }
             
-            push @points, $next_line->[I_B];
+            push @points, $next_line->[I_B] if !same_point($line->[I_B], $next_line->[I_B]);
             $visited_lines{$next_line} = 1;
             $line = $next_line;
         } while ($first_facet_index != $line->[I_FACET_INDEX]);
     
+        if (@points <= 2) {
+            Slic3r::debugf "  polygon reduced to %d points\n", scalar(@points);
+            next CYCLE;
+            }
+
         push @polygons, Slic3r::Polygon->new(@points);
         Slic3r::debugf "  Discovered %s polygon of %d points\n",
             ($polygons[-1]->is_counter_clockwise ? 'ccw' : 'cw'), scalar(@points)

@@ -164,6 +164,11 @@ sub slice {
             $self->layers->[$i]->id($i);
         }
     }
+
+    # remove empty layers from top
+    while (@{$self->layers} && !@{$self->layers->[-1]->slices} && !map @{$_->thin_walls}, @{$self->layers->[-1]->regions}) {
+        pop @{$self->layers};
+    }
     
     warn "No layers were detected. You might want to repair your STL file and retry.\n"
         if !@{$self->layers};
