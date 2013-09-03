@@ -13,6 +13,7 @@
 %typemap{Points};
 %typemap{Lines};
 %typemap{Polygons};
+%typemap{Polylines};
 %typemap{ExPolygons};
 %typemap{Polygons*};
 %typemap{Lines*};

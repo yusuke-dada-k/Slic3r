@@ -3,9 +3,7 @@ use Moo;
 
 extends 'Slic3r::Fill::Base';
 
-has 'cache'         => (is => 'rw', default => sub {{}});
-
-use Slic3r::Geometry qw(A B X Y MIN scale unscale scaled_epsilon);
+use Slic3r::Geometry qw(A B X Y MIN scale unscale scaled_epsilon expolygons_polylines_intersection);
 
 sub fill_surface {
     my $self = shift;
@@ -57,11 +55,10 @@ sub fill_surface {
     # the minimum offset for preventing edge lines from being clipped is scaled_epsilon;
     # however we use a larger offset to support expolygons with slightly skewed sides and 
     # not perfectly straight
-    my @polylines = map Slic3r::Polyline->new(@$_),
-        @{ Boost::Geometry::Utils::multi_polygon_multi_linestring_intersection(
-            [ map $_->pp, @{$expolygon->offset_ex($line_spacing*0.05)} ],
-            [ @vertical_lines ],
-        ) };
+    my @polylines = @{ expolygons_polylines_intersection(
+        $expolygon->offset_ex($line_spacing*0.05),
+        [ map Slic3r::Polyline->new(@$_), @vertical_lines ],
+    ) };
     
     # connect lines
     unless ($params{dont_connect}) {

@@ -3,7 +3,7 @@ use Moo;
 
 use List::Util qw(sum first);
 use Slic3r::ExtrusionPath ':roles';
-use Slic3r::Geometry qw(PI A B scale chained_path_items points_coincide);
+use Slic3r::Geometry qw(PI A B scale chained_path_items points_coincide expolygons_polylines_intersection);
 use Slic3r::Geometry::Clipper qw(union_ex diff_ex intersection_ex 
     offset offset2 offset2_ex union_pt traverse_pt diff intersection
     union diff);
@@ -515,10 +515,10 @@ sub _detect_bridge_direction {
             # we would get two consecutive polylines instead of a single one, so we use this ugly hack to 
             # recombine them back into a single one in order to trigger the @edges == 2 logic below.
             # This needs to be replaced with something way better.
-            if (points_coincide($clipped[0][0], $clipped[-1][-1])) {
+            if ($clipped[0]->first_point->coincides_with($clipped[-1]->last_point)) {
                 @clipped = (Slic3r::Polyline->new(@{$clipped[-1]}, @{$clipped[0]}));
             }
-            if (points_coincide($clipped[-1][0], $clipped[0][-1])) {
+            if ($clipped[-1]->first_point->coincides_with($clipped[0]->last_point)) {
                 @clipped = (Slic3r::Polyline->new(@{$clipped[0]}, @{$clipped[1]}));
             }
         }
@@ -580,12 +580,11 @@ sub _detect_bridge_direction {
             
             my @lines = ();
             for (my $x = $bounding_box->x_min; $x <= $bounding_box->x_max; $x += $line_increment) {
-                push @lines, [ [$x, $bounding_box->y_min], [$x, $bounding_box->y_max] ];
+                push @lines, Slic3r::Line->new([$x, $bounding_box->y_min], [$x, $bounding_box->y_max]);
             }
             
             # TODO: use a multi_polygon_multi_linestring_intersection() call
-            my @clipped_lines = map Slic3r::Line->new(@$_),
-                map @{ Boost::Geometry::Utils::polygon_multi_linestring_intersection($_->pp, \@lines) }, @$inset;
+            my @clipped_lines = @{expolygons_polylines_intersection($inset, \@lines)};
             
             # remove any line not having both endpoints within anchors
             @clipped_lines = grep {
@@ -595,7 +594,7 @@ sub _detect_bridge_direction {
             } @clipped_lines;
             
             # sum length of bridged lines
-            $directions{-$angle} = sum(map Slic3r::Geometry::line_length($_), @clipped_lines) // 0;
+            $directions{-$angle} = sum(map $_->length, @clipped_lines) // 0;
         }
         
         # this could be slightly optimized with a max search instead of the sort

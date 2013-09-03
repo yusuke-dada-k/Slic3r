@@ -66,11 +66,10 @@ namespace boost {
     }
 } // namespace boost::geometry::traits
 
+#include <boost/range.hpp>
 namespace boost
 {
-    // Specialize metafunctions. We must include the range.hpp header.
-    // We must open the 'boost' namespace.
-
+    // Specialize metafunctions.
     template <>
     struct range_iterator<ExPolygon> { typedef Polygons::iterator type; };
 
@@ -80,8 +79,7 @@ namespace boost
 } // namespace 'boost'
 
 
-// The required Range functions. These should be defined in the same namespace
-// as Ring.
+// The required Range functions.
 namespace Slic3r {
     inline Polygons::iterator range_begin(ExPolygon& r)
         {return r.holes.begin();}
@@ -95,6 +93,9 @@ namespace Slic3r {
     inline Polygons::const_iterator range_end(const ExPolygon& r)
         {return r.holes.end();}
 }
+
+#include <boost/geometry/multi/geometries/register/multi_polygon.hpp>
+BOOST_GEOMETRY_REGISTER_MULTI_POLYGON(ExPolygons);
 // end Boost.Geometry
 
 #endif

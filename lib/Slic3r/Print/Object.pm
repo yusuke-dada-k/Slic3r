@@ -1098,17 +1098,16 @@ sub generate_support_material {
             }
             
             # clip such loops to the side oriented towards the object
-            @loops = map Slic3r::Polyline->new(@$_),
-                @{ Boost::Geometry::Utils::multi_polygon_multi_linestring_intersection(
-                    [ offset_ex([ map @$_, @$overhang ], +scale 3) ],
-                    [ map Slic3r::Polygon->new(@$_)->split_at_first_point, @loops ],
-                ) };
+            @loops = @{ expolygons_polylines_intersection(
+                offset_ex([ map @$_, @$overhang ], +scale 3),
+                [ map Slic3r::Polygon->new(@$_)->split_at_first_point, @loops ],
+            ) };
             
             # add the contact infill area to the interface area
-            $contact_infill = [ offset2(\@loops0, -($contact_loops + 0.5) * $flow->scaled_spacing, +0.5*$flow->scaled_spacing) ];
+            $contact_infill = offset2(\@loops0, -($contact_loops + 0.5) * $flow->scaled_spacing, +0.5*$flow->scaled_spacing);
             
             # transform loops into ExtrusionPath objects
-            @loops = map Slic3r::ExtrusionPath->pack(
+            @loops = map Slic3r::ExtrusionPath->new(
                 polyline        => $_,
                 role            => EXTR_ROLE_SUPPORTMATERIAL,
                 flow_spacing    => $flow->spacing,

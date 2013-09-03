@@ -21,4 +21,15 @@ convex_hull(points)
     OUTPUT:
         RETVAL
 
+/*
+Polylines
+expolygons_polylines_intersection(expolygons, polylines)
+    ExPolygons  expolygons
+    Polylines   polylines
+    CODE:
+        boost::geometry::intersection(expolygons, polylines, RETVAL);
+    OUTPUT:
+        RETVAL
+*/
+
 %}

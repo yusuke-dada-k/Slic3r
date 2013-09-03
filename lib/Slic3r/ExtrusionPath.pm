@@ -10,7 +10,7 @@ our @EXPORT_OK = qw(EXTR_ROLE_PERIMETER EXTR_ROLE_EXTERNAL_PERIMETER
     EXTR_ROLE_INTERNALBRIDGE EXTR_ROLE_SKIRT EXTR_ROLE_SUPPORTMATERIAL EXTR_ROLE_GAPFILL);
 our %EXPORT_TAGS = (roles => \@EXPORT_OK);
 
-use Slic3r::Geometry qw(PI X Y epsilon deg2rad rotate_points);
+use Slic3r::Geometry qw(PI X Y epsilon deg2rad rotate_points expolygons_polylines_intersection);
 
 sub clip_with_polygon {
     my $self = shift;
@@ -31,8 +31,8 @@ sub intersect_expolygons {
     my $self = shift;
     my ($expolygons) = @_;
     
-    return map $self->clone(polyline => Slic3r::Polyline->new(@$_)),
-        @{Boost::Geometry::Utils::multi_polygon_multi_linestring_intersection([ map $_->pp, @$expolygons ], [$self->pp])};
+    return map $self->clone(polyline => $_),
+        @{expolygons_polylines_intersection($expolygons, [$self->polyline])};
 }
 
 sub subtract_expolygons {

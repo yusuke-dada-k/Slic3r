@@ -5,7 +5,7 @@ extends 'Slic3r::Fill::Base';
 
 has 'cache'         => (is => 'rw', default => sub {{}});
 
-use Slic3r::Geometry qw(PI X Y MIN MAX scale scaled_epsilon);
+use Slic3r::Geometry qw(PI X Y MIN MAX scale scaled_epsilon expolygons_polylines_intersection);
 use Slic3r::Geometry::Clipper qw(intersection);
 
 sub angles () { [0, PI/3, PI/3*2] }
@@ -115,11 +115,10 @@ sub fill_surface {
         }
         
         # clip paths again to prevent connection segments from crossing the expolygon boundaries
-        @paths = map Slic3r::Polyline->new(@$_),
-            @{ Boost::Geometry::Utils::multi_polygon_multi_linestring_intersection(
-                [ map $_->pp, @{$surface->expolygon->offset_ex(scaled_epsilon)} ],
-                [ map $_->pp, @paths ],
-            ) } if @paths;  # this temporary check is a workaround for the multilinestring bug in B::G::U
+        @paths = @{ expolygons_polylines_intersection(
+            $surface->expolygon->offset_ex(scaled_epsilon),
+            [ @paths ],
+        ) } if @paths;  # this temporary check is a workaround for the multilinestring bug in Boost.Geometry
     }
     
     return { flow_spacing => $params{flow_spacing} }, @paths;

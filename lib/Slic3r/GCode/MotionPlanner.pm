@@ -13,7 +13,7 @@ has '_crossing_edges' => (is => 'rw', default => sub { {} });  # edge_idx => boo
 has '_tolerance'    => (is => 'lazy');
 
 use List::Util qw(first);
-use Slic3r::Geometry qw(A B scale epsilon);
+use Slic3r::Geometry qw(A B scale epsilon expolygons_polylines_intersection);
 use Slic3r::Geometry::Clipper qw(diff_ex offset);
 
 # clearance (in mm) from the perimeters
@@ -91,7 +91,7 @@ sub BUILD {
                 for my $m (0 .. $#{$outer[$i]}) {
                     for my $n (0 .. $#{$outer[$j]}) {
                         my $line = Slic3r::Line->new($outer[$i][$m], $outer[$j][$n]);
-                        if (!@{Boost::Geometry::Utils::multi_polygon_multi_linestring_intersection(\@outer_ex, [$line])}) {
+                        if (!@{expolygons_polylines_intersection(\@outer_ex, [$line])}) {
                             # this line does not cross any polygon
                             my $dist = $line->length;
                             $edges->{$outer[$i][$m]}{$outer[$j][$n]} = $dist;
@@ -112,7 +112,7 @@ sub BUILD {
                 for my $m (0 .. $#{$inner[$i]}) {
                     for my $n (0 .. $#{$inner[$j]}) {
                         my $line = Slic3r::Line->new($inner[$i][$m], $inner[$j][$n]);
-                        if (!@{Boost::Geometry::Utils::multi_polygon_multi_linestring_intersection(\@inner_ex, [$line])}) {
+                        if (!@{expolygons_polylines_intersection(\@inner_ex, [$line])}) {
                             # this line does not cross any polygon
                             my $dist = $line->length * CROSSING_FACTOR;
                             $edges->{$inner[$i][$m]}{$inner[$j][$n]} = $dist;

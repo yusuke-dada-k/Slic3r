@@ -21,7 +21,7 @@ our @EXPORT_OK = qw(
     chained_path collinear scale unscale merge_collinear_lines
     rad2deg_dir bounding_box_center line_intersects_any douglas_peucker
     polyline_remove_short_segments normal triangle_normal polygon_is_convex
-    scaled_epsilon bounding_box_3D size_3D size_2D
+    scaled_epsilon bounding_box_3D size_3D size_2D expolygons_polylines_intersection
 );
 
 
@@ -1026,6 +1026,16 @@ sub arrange {
         push @positions, [$cx * $partx, $cy * $party];
     }
     return @positions;
+}
+
+sub expolygons_polylines_intersection {
+    my ($expolygons, $polylines) = @_;
+    
+    my $result = Boost::Geometry::Utils::multi_polygon_multi_linestring_intersection(
+        [ map $_->pp, @$expolygons ],
+        [ map $_->pp, @$polylines ],
+    );
+    return [ map Slic3r::Polyline->new(@$_), @$result ];
 }
 
 1;
