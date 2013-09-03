@@ -32,4 +32,7 @@ class Point
 
 }
 
+#include <boost/geometry/geometries/register/point.hpp>
+BOOST_GEOMETRY_REGISTER_POINT_2D(Point, long, cs::cartesian, x, y);
+
 #endif

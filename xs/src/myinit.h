@@ -13,6 +13,10 @@ extern "C" {
 #undef do_close
 }
 
+// Boost.Geometry
+#include <boost/geometry.hpp>
+
+// Slic3r constants
 #define EPSILON 1e-4
 
 namespace Slic3r {}

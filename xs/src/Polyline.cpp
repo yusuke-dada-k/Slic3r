@@ -33,4 +33,10 @@ Polyline::to_SV_clone_ref() const
     return sv;
 }
 
+double
+Polyline::length() const
+{
+    return boost::geometry::length(this->points);
+}
+
 }

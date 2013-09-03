@@ -12,10 +12,14 @@ class Polyline : public MultiPoint {
     void lines(Lines &lines) const;
     SV* to_SV_ref();
     SV* to_SV_clone_ref() const;
+    double length() const;
 };
 
 typedef std::vector<Polyline> Polylines;
 
 }
+
+#include <boost/geometry/geometries/register/linestring.hpp>
+BOOST_GEOMETRY_REGISTER_LINESTRING(Points)
 
 #endif

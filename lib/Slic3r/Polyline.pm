@@ -35,11 +35,6 @@ sub simplify {
     return __PACKAGE__->new(@$simplified);
 }
 
-sub length {
-    my $self = shift;
-    return Boost::Geometry::Utils::linestring_length($self->pp);
-}
-
 sub grow {
     my $self = shift;
     my ($distance, $scale, $joinType, $miterLimit) = @_;

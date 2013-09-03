@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Slic3r::XS;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 my $points = [
     [100, 100],
@@ -13,6 +13,7 @@ my $points = [
 ];
 
 my $polyline = Slic3r::Polyline->new(@$points);
+is $polyline->length, 200, 'length';
 
 is_deeply $polyline->pp, $points, 'polyline roundtrip';
 
