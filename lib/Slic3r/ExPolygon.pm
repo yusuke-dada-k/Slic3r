@@ -39,19 +39,14 @@ sub noncollapsing_offset_ex {
     return $self->offset_ex($distance + 1, @params);
 }
 
-sub encloses_point {
-    my $self = shift;
-    my ($point) = @_;
-    return Boost::Geometry::Utils::point_covered_by_polygon($point->pp, $self->pp);
-}
-
 # A version of encloses_point for use when hole borders do not matter.
 # Useful because point_on_segment is probably slower (this was true
 # before the switch to Boost.Geometry, not sure about now)
 sub encloses_point_quick {
     my $self = shift;
     my ($point) = @_;
-    return Boost::Geometry::Utils::point_within_polygon($point->pp, $self->pp);
+    #return Boost::Geometry::Utils::point_within_polygon($point->pp, $self->pp);
+    return $self->encloses_point($point);
 }
 
 sub encloses_line {

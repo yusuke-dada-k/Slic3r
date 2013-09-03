@@ -22,10 +22,79 @@ class ExPolygon
     void rotate(double angle, Point* center);
     double area() const;
     bool is_valid() const;
+    bool encloses_point(Point* point) const;
 };
 
 typedef std::vector<ExPolygon> ExPolygons;
 
 }
+
+// Boost.Geometry
+namespace boost {
+    namespace geometry {
+        namespace traits {
+            template<> struct tag<ExPolygon> { typedef polygon_tag type; };
+            template<> struct ring_const_type<ExPolygon> { typedef const Polygon& type; };
+            template<> struct ring_mutable_type<ExPolygon> { typedef Polygon& type; };
+            template<> struct interior_const_type<ExPolygon> { typedef const Polygons type; };
+            template<> struct interior_mutable_type<ExPolygon> { typedef Polygons type; };
+
+            template<> struct exterior_ring<ExPolygon>
+            {
+                static Polygon& get(ExPolygon& p)
+                {
+                    return p.contour;
+                }
+                static Polygon const& get(ExPolygon const& p)
+                {
+                    return p.contour;
+                }
+            };
+
+            template<> struct interior_rings<ExPolygon>
+            {
+                static Polygons get(ExPolygon& p)
+                {
+                    return Polygons(Polygons::iterator(p.holes.begin()), Polygons::iterator(p.holes.end()));
+                }
+                static const Polygons get(ExPolygon const& p)
+                {
+                    return Polygons(Polygons::const_iterator(p.holes.begin()), Polygons::const_iterator(p.holes.end()));
+                }
+            };
+        }
+    }
+} // namespace boost::geometry::traits
+
+namespace boost
+{
+    // Specialize metafunctions. We must include the range.hpp header.
+    // We must open the 'boost' namespace.
+
+    template <>
+    struct range_iterator<ExPolygon> { typedef Polygons::iterator type; };
+
+    template<>
+    struct range_const_iterator<ExPolygon> { typedef Polygons::const_iterator type; };
+
+} // namespace 'boost'
+
+
+// The required Range functions. These should be defined in the same namespace
+// as Ring.
+namespace Slic3r {
+    inline Polygons::iterator range_begin(ExPolygon& r)
+        {return r.holes.begin();}
+    
+    inline Polygons::const_iterator range_begin(const ExPolygon& r)
+        {return r.holes.begin();}
+    
+    inline Polygons::iterator range_end(ExPolygon& r)
+        {return r.holes.end();}
+    
+    inline Polygons::const_iterator range_end(const ExPolygon& r)
+        {return r.holes.end();}
+}
+// end Boost.Geometry
 
 #endif

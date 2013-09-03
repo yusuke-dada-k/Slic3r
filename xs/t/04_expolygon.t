@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Slic3r::XS;
-use Test::More tests => 21;
+use Test::More tests => 25;
 
 use constant PI => 4 * atan2(1, 1);
 
@@ -43,6 +43,11 @@ isa_ok $expolygon->[0][0], 'Slic3r::Point::Ref', 'expolygon point is blessed';
 is_deeply $expolygon->clone->pp, [$square, $hole_in_square], 'clone';
 
 is $expolygon->area, 100*100-20*20, 'area';
+
+ok !$expolygon->encloses_point(Slic3r::Point->new(150, 150)), 'encloses_point';
+ok $expolygon->encloses_point(Slic3r::Point->new(120, 120)), 'encloses_point';
+ok $expolygon->encloses_point(Slic3r::Point->new(100, 150)), 'encloses_point';
+ok !$expolygon->encloses_point(Slic3r::Point->new(0, 50)), 'encloses_point';
 
 {
     my $expolygon2 = $expolygon->clone;
