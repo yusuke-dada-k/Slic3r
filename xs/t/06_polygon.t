@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Slic3r::XS;
-use Test::More tests => 14;
+use Test::More tests => 17;
 
 my $square = [  # ccw
     [100, 100],
@@ -45,6 +45,10 @@ ok $polygon->is_counter_clockwise, 'is_counter_clockwise';
 }
 
 ok ref($polygon->first_point) eq 'Slic3r::Point', 'first_point';
+
+ok $polygon->encloses_point(Slic3r::Point->new(150, 150)), 'encloses_point';
+ok $polygon->encloses_point(Slic3r::Point->new(100, 150)), 'encloses_point';
+ok !$polygon->encloses_point(Slic3r::Point->new(0, 50)), 'encloses_point';
 
 # this is not a test: this just demonstrates bad usage, where $polygon->clone gets
 # DESTROY'ed before the derived object ($point), causing bad memory access

@@ -2,6 +2,7 @@
 #include "ClipperUtils.hpp"
 #include "Polygon.hpp"
 #include "Polyline.hpp"
+#include <boost/geometry/algorithms/covered_by.hpp>
 
 namespace Slic3r {
 
@@ -115,6 +116,12 @@ bool
 Polygon::is_valid() const
 {
     return this->points.size() >= 3;
+}
+
+bool
+Polygon::encloses_point(Point* point) const
+{
+    return boost::geometry::covered_by(*point, *this);
 }
 
 }
