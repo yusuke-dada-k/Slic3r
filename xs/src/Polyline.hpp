@@ -21,7 +21,9 @@ typedef std::vector<Polyline> Polylines;
 
 // Boost.Geometry
 #include <boost/geometry/geometries/register/linestring.hpp>
+#include <boost/geometry/multi/geometries/register/multi_linestring.hpp>
 BOOST_GEOMETRY_REGISTER_LINESTRING(Polyline)
+BOOST_GEOMETRY_REGISTER_MULTI_LINESTRING(Polylines);
 
 #include <boost/range.hpp>
 namespace boost
