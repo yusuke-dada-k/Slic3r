@@ -154,6 +154,7 @@ sub add_model {
             print       => $self,
             meshes      => [ @meshes ],
             copies      => [
+                map Slic3r::Point->new(@$_),
                 $object->instances
                     ? (map [ scale($_->offset->[X] - $align[X]) - $align2[X], scale($_->offset->[Y] - $align[Y]) - $align2[Y] ], @{$object->instances})
                     : [0,0],
@@ -584,8 +585,8 @@ sub make_skirt {
         if (@{ $object->support_layers }) {
             my @support_layers = map $object->support_layers->[$_], 0..min($Slic3r::Config->skirt_height-1, $#{$object->support_layers});
             push @layer_points,
-                (map @{$_->unpack->polyline}, map @{$_->support_fills->paths}, grep $_->support_fills, @support_layers),
-                (map @{$_->unpack->polyline}, map @{$_->support_interface_fills->paths}, grep $_->support_interface_fills, @support_layers);
+                (map @{$_->polyline}, map @{$_->support_fills}, grep $_->support_fills, @support_layers),
+                (map @{$_->polyline}, map @{$_->support_interface_fills}, grep $_->support_interface_fills, @support_layers);
         }
         push @points, map move_points($_, @layer_points), @{$object->copies};
     }
@@ -650,10 +651,10 @@ sub make_brim {
         if (@{ $object->support_layers }) {
             my $support_layer0 = $object->support_layers->[0];
             push @object_islands,
-                (map $_->unpack->polyline->grow($grow_distance), @{$support_layer0->support_fills->paths})
+                (map $_->polyline->grow($grow_distance), @{$support_layer0->support_fills})
                 if $support_layer0->support_fills;
             push @object_islands,
-                (map $_->unpack->polyline->grow($grow_distance), @{$support_layer0->support_interface_fills->paths})
+                (map $_->polyline->grow($grow_distance), @{$support_layer0->support_interface_fills})
                 if $support_layer0->support_interface_fills;
         }
         foreach my $copy (@{$object->copies}) {
