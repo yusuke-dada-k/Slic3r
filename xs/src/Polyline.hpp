@@ -13,6 +13,7 @@ class Polyline : public MultiPoint {
     SV* to_SV_ref();
     SV* to_SV_clone_ref() const;
     double length() const;
+    void clip_end(double d);
 };
 
 typedef std::vector<Polyline> Polylines;

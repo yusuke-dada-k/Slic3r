@@ -259,8 +259,7 @@ sub extrude_loop {
         # the rotation of the second segment so we might cross the object boundary
         my $first_segment = Slic3r::Line->new(@{$extrusion_path->polyline}[0,1]);
         my $distance = min(scale $extrusion_path->flow_spacing, $first_segment->length);
-        my $point = Slic3r::Geometry::point_along_segment(@$first_segment, $distance);
-        $point = Slic3r::Point->new(@$point);
+        my $point = $first_segment->point_at($distance);
         $point->rotate($angle, $extrusion_path->first_point);
         
         # generate the travel move

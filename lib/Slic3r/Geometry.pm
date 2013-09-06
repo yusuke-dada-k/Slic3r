@@ -10,7 +10,7 @@ our @EXPORT_OK = qw(
     chained_path_items chained_path_points normalize tan move_points_3D
     line_length midpoint point_in_polygon point_in_segment segment_in_segment
     point_is_on_left_of_segment polyline_lines polygon_lines
-    point_along_segment polygon_segment_having_point polygon_has_subsegment
+    polygon_segment_having_point polygon_has_subsegment
     polygon_has_vertex polyline_length can_connect_points deg2rad rad2deg
     rotate_points move_points clip_segment_polygon
     sum_vectors multiply_vector subtract_vectors dot perp polygon_points_visibility
@@ -237,22 +237,6 @@ sub polyline_lines {
 sub polygon_lines {
     my ($polygon) = @_;
     return polyline_lines([ @$polygon, $polygon->[0] ]);
-}
-
-# given a segment $p1-$p2, get the point at $distance from $p1 along segment
-sub point_along_segment {
-    my ($p1, $p2, $distance) = @_;
-    
-    my $point = [ @$p1 ];
-    
-    my $line_length = sqrt( (($p2->[X] - $p1->[X])**2) + (($p2->[Y] - $p1->[Y])**2) );
-    for (X, Y) {
-        if ($p1->[$_] != $p2->[$_]) {
-            $point->[$_] = $p1->[$_] + ($p2->[$_] - $p1->[$_]) * $distance / $line_length;
-        }
-    }
-    
-    return Slic3r::Point->new(@$point);
 }
 
 # given a $polygon, return the (first) segment having $point

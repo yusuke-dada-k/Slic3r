@@ -48,18 +48,6 @@ sub simplify {
     $self->polyline($self->polyline->simplify(@_));
 }
 
-sub clip_end {
-    my $self = shift;
-    my $polyline = $self->polyline;
-    $polyline->clip_end(@_);
-    $self->polyline($polyline);
-}
-
-sub length {
-    my $self = shift;
-    return $self->polyline->length;
-}
-
 sub points {
     my $self = shift;
     return $self->polyline;

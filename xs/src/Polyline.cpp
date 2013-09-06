@@ -39,4 +39,27 @@ Polyline::length() const
     return boost::geometry::length(*this);
 }
 
+// removes the given distance from the end of the polyline
+void
+Polyline::clip_end(double d)
+{
+    while (d > 0) {
+        Point last_point = this->points.back();
+        this->points.pop_back();
+        if (this->points.size() == 0) break;
+        
+        Line last_segment = Line(last_point, this->points.back());
+        double last_segment_length = last_segment.length();
+        if (last_segment_length <= d) {
+            d -= last_segment_length;
+            continue;
+        }
+        
+        Point* p = last_segment.point_at(d);
+        this->points.push_back(*p);
+        delete p;
+        break;
+    }
+}
+
 }

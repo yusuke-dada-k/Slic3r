@@ -45,6 +45,8 @@ class ExtrusionPath : public ExtrusionEntity
     void reverse();
     Point* first_point() const;
     Point* last_point() const;
+    double length() const;
+    void clip_end(double d);
 };
 
 class ExtrusionLoop : public ExtrusionEntity

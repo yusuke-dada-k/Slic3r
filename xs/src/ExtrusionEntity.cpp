@@ -26,6 +26,18 @@ ExtrusionPath::last_point() const
     return new Point(this->polyline.points.back());
 }
 
+double
+ExtrusionPath::length() const
+{
+    return this->polyline.length();
+}
+
+void
+ExtrusionPath::clip_end(double d)
+{
+    this->polyline.clip_end(d);
+}
+
 ExtrusionLoop*
 ExtrusionLoop::clone() const
 {

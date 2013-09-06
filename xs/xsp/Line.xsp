@@ -22,7 +22,9 @@
     void translate(double x, double y);
     double length();
     Point* midpoint()
-         %code{% const char* CLASS = "Slic3r::Point"; RETVAL = THIS->midpoint(); %};
+        %code{% const char* CLASS = "Slic3r::Point"; RETVAL = THIS->midpoint(); %};
+    Point* point_at(double d)
+        %code{% const char* CLASS = "Slic3r::Point"; RETVAL = THIS->point_at(d); %};
 %{
 
 Line*

@@ -80,28 +80,6 @@ sub align_to_origin {
     return $self->translate(-$bb->x_min, -$bb->y_min);
 }
 
-# removes the given distance from the end of the polyline
-sub clip_end {
-    my $self = shift;
-    my ($distance) = @_;
-    
-    while ($distance > 0) {
-        my $last_point = $self->[-1];
-        $self->pop_back;
-        last if @$self == 0;
-        
-        my $last_segment_length = $last_point->distance_to($self->[-1]);
-        if ($last_segment_length <= $distance) {
-            $distance -= $last_segment_length;
-            next;
-        }
-        
-        my $new_point = Slic3r::Geometry::point_along_segment($last_point, $self->[-1], $distance);
-        $self->append($new_point);
-        $distance = 0;
-    }
-}
-
 # only keeps the given distance at the beginning of the polyline
 sub clip_start {
     my $self = shift;
@@ -119,9 +97,8 @@ sub clip_start {
             next;
         }
         
-        my $new_point = Slic3r::Geometry::point_along_segment($points[$i-1], $point, $distance);
-        push @$points, Slic3r::Point->new(@$new_point);
-        $distance = 0;
+        push @$points, Slic3r::Line->new($points[$i-1], $point)->point_at($distance);
+        last;
     }
     
     return __PACKAGE__->new(@$points);
@@ -150,8 +127,7 @@ sub regular_points {
         }
         
         my $take = $segment_length - ($len - $distance);  # how much we take of this segment
-        my $new_point = Slic3r::Geometry::point_along_segment($self->[$i-1], $point, $take);
-        push @points, Slic3r::Point->new($new_point);
+        push @points, Slic3r::Line->new($self->[$i-1], $point)->point_at($take);
         $i--;
         $len = -$take;
     }

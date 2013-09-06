@@ -25,6 +25,7 @@ class Line
     void reverse();
     double length() const;
     Point* midpoint() const;
+    Point* point_at(double d) const;
 };
 
 typedef std::vector<Line> Lines;

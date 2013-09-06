@@ -54,7 +54,7 @@ sub subdivide {
         next if $num_points == -1;
         my $spacing = $len / ($num_points + 1);
         my @new_points = map Slic3r::Point->new($_),
-            map Slic3r::Geometry::point_along_segment($self->[$i-1], $self->[$i], $spacing * $_),
+            map Slic3r::Line->new($self->[$i-1], $self->[$i])->point_at($spacing * $_),
             1..$num_points;
         
         splice @$self, $i, 0, @new_points;

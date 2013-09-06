@@ -99,4 +99,15 @@ Line::to_SV_pureperl() const {
     return newRV_noinc((SV*)av);
 }
 
+// get the point at distance d along this line
+Point*
+Line::point_at(double d) const
+{
+    Point* p = new Point (this->a);
+    double len = this->length();
+    if (this->a.x != this->b.x) p->x = this->a.x + (this->b.x - this->a.x) * d / len;
+    if (this->a.y != this->b.y) p->y = this->a.y + (this->b.y - this->a.y) * d / len;
+    return p;
+}
+
 }
