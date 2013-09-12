@@ -61,5 +61,23 @@ Polyline::clip_end(double d)
         break;
     }
 }
+    
+std::size_t
+Polyline::size() const
+{
+    return this->points.size();
+}
+
+void
+Polyline::clear()
+{
+    this->points.clear();
+}
+
+const Point&
+Polyline::operator[] (const int nIndex) const
+{
+    return this->points[nIndex];
+}
 
 }

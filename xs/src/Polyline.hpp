@@ -14,6 +14,11 @@ class Polyline : public MultiPoint {
     SV* to_SV_clone_ref() const;
     double length() const;
     void clip_end(double d);
+    
+    // for Boost.Geometry:
+    std::size_t size() const;
+    void clear();
+    const Point& operator[] (const int nIndex) const;
 };
 
 typedef std::vector<Polyline> Polylines;
@@ -25,6 +30,35 @@ typedef std::vector<Polyline> Polylines;
 #include <boost/geometry/multi/geometries/register/multi_linestring.hpp>
 BOOST_GEOMETRY_REGISTER_LINESTRING(Polyline)
 BOOST_GEOMETRY_REGISTER_MULTI_LINESTRING(Polylines);
+
+namespace boost { namespace geometry { namespace traits {
+    template<>
+    struct clear<Polyline>
+    {
+        static inline void apply(Polyline& polyline)
+        {
+            polyline.points.clear();
+        }
+    };
+    
+    template<>
+    struct resize<Polyline>
+    {
+        static inline void apply(Polyline& polyline, std::size_t new_size)
+        {
+            polyline.points.resize(new_size);
+        }
+    };
+    
+    template<>
+    struct push_back<Polyline>
+    {
+        static inline void apply(Polyline& polyline, Point const& point)
+        {
+            polyline.points.push_back(point);
+        }
+    };
+}}}
 
 #include <boost/range.hpp>
 namespace boost

@@ -35,6 +35,22 @@ typedef std::vector<Polygon> Polygons;
 #include <boost/geometry/geometries/register/ring.hpp>
 BOOST_GEOMETRY_REGISTER_RING(Polygon);
 
+#include <boost/geometry/core/point_order.hpp>
+#include <boost/geometry/core/closure.hpp>
+namespace boost { namespace geometry { namespace traits {
+    template<>
+    struct point_order<Polygon>
+    {
+        static const order_selector value = counterclockwise;
+    };
+    
+    template <>
+    struct closure<Polygon>
+    {
+        static const closure_selector value = open;
+    };
+}}}
+
 #include <boost/range.hpp>
 namespace boost
 {
