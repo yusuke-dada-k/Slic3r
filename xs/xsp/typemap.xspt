@@ -1,6 +1,8 @@
 %typemap{bool}{simple};
 %typemap{std::string};
 %typemap{std::vector<unsigned int>*};
+%typemap{std::vector<double>};
+%typemap{std::vector<double>*};
 %typemap{SV*};
 %typemap{AV*};
 %typemap{Point*};
@@ -16,7 +18,7 @@
 %typemap{Polylines};
 %typemap{ExPolygons};
 %typemap{Polygons*};
-%typemap{Lines*};
+%typemap{TriangleMeshPtrs};
 
 %typemap{SurfaceType}{parsed}{
   %cpp_type{SurfaceType};

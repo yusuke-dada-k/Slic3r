@@ -52,7 +52,7 @@ sub BUILD {
             : $self->islands->[$i]->offset_ex(-$self->_inner_margin);
         
         # offset the island outwards to make the boundaries for external movements
-        $self->_outer->[$i] = offset([ $self->islands->[$i]->contour], $self->_outer_margin);
+        $self->_outer->[$i] = offset([ $self->islands->[$i]->contour ], $self->_outer_margin);
         
         # if internal motion is enabled, build a set of utility expolygons representing
         # the outer boundaries (as contours) and the inner boundaries (as holes). whenever
@@ -74,7 +74,7 @@ sub BUILD {
     
     {
         my @outer = (map @$_, @{$self->_outer});
-        my @outer_ex = map [$_], @outer;  # as ExPolygons
+        my @outer_ex = map Slic3r::ExPolygon->new($_), @outer;  # build ExPolygons for Boost
         
         # lines of outer polygons connect visible points
         for my $i (0 .. $#outer) {
@@ -106,7 +106,7 @@ sub BUILD {
     # lines connecting inner polygons contours are visible but discouraged
     if (!$self->no_internal) {
         my @inner = (map $_->contour, map @$_, @{$self->_inner});
-        my @inner_ex = map [$_], @inner;  # as ExPolygons
+        my @inner_ex = map Slic3r::ExPolygon->new($_), @inner;  # build ExPolygons for Boost
         for my $i (0 .. $#inner) {
             for my $j (($i+1) .. $#inner) {
                 for my $m (0 .. $#{$inner[$i]}) {
