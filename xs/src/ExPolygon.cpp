@@ -119,10 +119,12 @@ ExPolygon::from_SV_check(SV* expoly_sv)
     }
 }
 
+#ifndef NOBOOST
 bool
 ExPolygon::encloses_point(Point* point) const
 {
     return boost::geometry::covered_by(*point, *this);
 }
+#endif
 
 }

@@ -29,7 +29,7 @@ typedef std::vector<ExPolygon> ExPolygons;
 
 }
 
-// Boost.Geometry
+#ifndef NOBOOST
 namespace boost {
     namespace geometry {
         namespace traits {
@@ -55,47 +55,19 @@ namespace boost {
             {
                 static Polygons get(ExPolygon& p)
                 {
-                    return Polygons(Polygons::iterator(p.holes.begin()), Polygons::iterator(p.holes.end()));
+                    return p.holes;
                 }
                 static const Polygons get(ExPolygon const& p)
                 {
-                    return Polygons(Polygons::const_iterator(p.holes.begin()), Polygons::const_iterator(p.holes.end()));
+                    return p.holes;
                 }
             };
         }
     }
 } // namespace boost::geometry::traits
 
-#include <boost/range.hpp>
-namespace boost
-{
-    // Specialize metafunctions.
-    template <>
-    struct range_iterator<ExPolygon> { typedef Polygons::iterator type; };
-
-    template<>
-    struct range_const_iterator<ExPolygon> { typedef Polygons::const_iterator type; };
-
-} // namespace 'boost'
-
-
-// The required Range functions.
-namespace Slic3r {
-    inline Polygons::iterator range_begin(ExPolygon& r)
-        {return r.holes.begin();}
-    
-    inline Polygons::const_iterator range_begin(const ExPolygon& r)
-        {return r.holes.begin();}
-    
-    inline Polygons::iterator range_end(ExPolygon& r)
-        {return r.holes.end();}
-    
-    inline Polygons::const_iterator range_end(const ExPolygon& r)
-        {return r.holes.end();}
-}
-
 #include <boost/geometry/multi/geometries/register/multi_polygon.hpp>
 BOOST_GEOMETRY_REGISTER_MULTI_POLYGON(ExPolygons);
-// end Boost.Geometry
+#endif
 
 #endif

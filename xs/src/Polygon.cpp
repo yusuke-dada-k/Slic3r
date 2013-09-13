@@ -118,10 +118,18 @@ Polygon::is_valid() const
     return this->points.size() >= 3;
 }
 
+#ifndef NOBOOST
 bool
 Polygon::encloses_point(Point* point) const
 {
     return boost::geometry::covered_by(*point, *this);
 }
+
+void
+Polygon::push_back(const Point& point)
+{
+    this->points.push_back(point);
+}
+#endif
 
 }

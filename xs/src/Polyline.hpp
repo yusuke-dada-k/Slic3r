@@ -15,17 +15,18 @@ class Polyline : public MultiPoint {
     double length() const;
     void clip_end(double d);
     
-    // for Boost.Geometry:
+    #ifndef NOBOOST
     std::size_t size() const;
     void clear();
     const Point& operator[] (const int nIndex) const;
+    #endif
 };
 
 typedef std::vector<Polyline> Polylines;
 
 }
 
-// Boost.Geometry
+#ifndef NOBOOST
 #include <boost/geometry/geometries/register/linestring.hpp>
 #include <boost/geometry/multi/geometries/register/multi_linestring.hpp>
 BOOST_GEOMETRY_REGISTER_LINESTRING(Polyline)
@@ -85,7 +86,6 @@ namespace Slic3r {
     inline Points::const_iterator
     range_end(const Polyline& poly) {return poly.points.end();}
 }
-// end B
-// end Boost.Geometry
+#endif
 
 #endif

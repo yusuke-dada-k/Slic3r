@@ -32,9 +32,11 @@ class Point
 
 }
 
+#ifndef NOBOOST
 #include <boost/geometry/geometries/register/point.hpp>
 #include <boost/geometry/multi/geometries/register/multi_point.hpp>
 BOOST_GEOMETRY_REGISTER_POINT_2D(Point, long, cs::cartesian, x, y);
 BOOST_GEOMETRY_REGISTER_MULTI_POINT(Points);
+#endif
 
 #endif

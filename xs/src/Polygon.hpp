@@ -24,14 +24,19 @@ class Polygon : public MultiPoint {
     bool make_counter_clockwise();
     bool make_clockwise();
     bool is_valid() const;
+    
+    #ifndef NOBOOST
     bool encloses_point(Point* point) const;
+    void push_back(const Point& point);
+    typedef const Point& const_reference;
+    #endif
 };
 
 typedef std::vector<Polygon> Polygons;
 
 }
 
-// Boost.Geometry
+#ifndef NOBOOST
 #include <boost/geometry/geometries/register/ring.hpp>
 BOOST_GEOMETRY_REGISTER_RING(Polygon);
 
@@ -76,6 +81,6 @@ namespace Slic3r {
     inline Points::const_iterator
     range_end(const Polygon& poly) {return poly.points.end();}
 }
-// end Boost.Geometry
+#endif
 
 #endif
