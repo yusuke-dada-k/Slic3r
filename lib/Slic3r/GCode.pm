@@ -246,8 +246,25 @@ sub extrude_loop {
         # get non-overhang paths by subtracting overhangs from the loop
         push @paths,
             map $_->clone,
-            @{$extrusion_path->subtract_expolygons($self->_layer_overhangs)};
+            @{$extrusion_path->subtract_expolygons(Slic3r::ExPolygon::Collection->new || $self->_layer_overhangs)};
         
+        if (@paths == 1) {
+            if ($paths[0]->polyline->length != $extrusion_path->polyline->length) {
+                use XXX; YYY (
+                    $extrusion_path->polyline->wkt,
+                    $paths[0]->polyline->wkt,
+                );
+                
+                use Slic3r::SVG;
+                Slic3r::SVG::output("path.svg",
+                    red_polylines   => [ $extrusion_path->polyline ],
+                    polylines       => [ $paths[0]->polyline ],
+                );
+                exit;
+            }
+        }
+        
+        if (0) {
         # get overhang paths by intersecting overhangs with the loop
         foreach my $path (@{$extrusion_path->intersect_expolygons($self->_layer_overhangs)}) {
             $path = $path->clone;
@@ -255,11 +272,12 @@ sub extrude_loop {
             $path->mm3_per_mm($self->region->flow(FLOW_ROLE_PERIMETER, -1, 1)->mm3_per_mm(-1));
             push @paths, $path;
         }
+        }
         
         # reapply the nearest point search for starting point
         # (clone because the collection gets DESTROY'ed)
         my $collection = Slic3r::ExtrusionPath::Collection->new(@paths);
-        @paths = map $_->clone, @{$collection->chained_path_from($start_at, 1)};
+        #@paths = map $_->clone, @{$collection->chained_path_from($start_at, 1)};
     } else {
         push @paths, $extrusion_path;
     }

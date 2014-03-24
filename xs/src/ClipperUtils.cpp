@@ -370,6 +370,8 @@ template void diff<Slic3r::Polygons>(const Slic3r::Polygons &subject, const Slic
 void diff(const Slic3r::Polylines &subject, const Slic3r::Polygons &clip, Slic3r::Polylines &retval)
 {
     _clipper(ClipperLib::ctDifference, subject, clip, retval);
+    printf("polylines = %zu, polygons = %zu, return polylines = %zu\n",
+        subject.size(), clip.size(), retval.size());
 }
 
 template <class T>
