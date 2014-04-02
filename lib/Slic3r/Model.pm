@@ -20,18 +20,6 @@ sub read_from_file {
     return $model;
 }
 
-sub merge {
-    my $class = shift;
-    my @models = @_;
-    
-    my $new_model = ref($class)
-        ? $class
-        : $class->new;
-    
-    $new_model->add_object($_) for map @{$_->objects}, @models;
-    return $new_model;
-}
-
 sub add_object {
     my $self = shift;
     
