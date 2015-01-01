@@ -292,4 +292,41 @@ sub CallAfter {
     push @cb, $cb;
 }
 
+package Slic3r::GUI::ListViewComboCtrl;
+use base qw(Wx::ComboCtrl);
+
+sub new {
+    my $class = shift;
+    my $self = $class->SUPER::new(@_);
+    
+    $self->SetPopupControl($self->{popup} = Slic3r::GUI::ListViewComboPopup->new);
+    
+    return $self;
+}
+
+sub GetSelection {1}
+sub Clear {}
+sub Append {}
+sub AppendString {}
+sub SetSelection {}
+
+package Slic3r::GUI::ListViewComboPopup;
+use base qw(Wx::ListView Wx::ComboPopup);
+use Wx qw(:misc);
+
+sub Create {
+    my ($class, $parent) = @_;
+    
+    return Wx::ListView->Create($parent, -1, wxDefaultPosition, wxDefaultSize);
+}
+
+sub GetControl {
+    my ($self) = @_;
+    return $self;
+}
+
+sub SetStringValue {}
+sub GetStringValue {}
+
+
 1;

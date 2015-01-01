@@ -302,12 +302,13 @@ sub new {
             for my $group (qw(print filament printer)) {
                 my $text = Wx::StaticText->new($self, -1, "$group_labels{$group}:", wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
                 $text->SetFont($Slic3r::GUI::small_font);
-                my $choice = Wx::Choice->new($self, -1, wxDefaultPosition, wxDefaultSize, []);
-                $choice->SetFont($Slic3r::GUI::small_font);
+                my $choice = Wx::BitmapComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, []);
+                #my $choice = Slic3r::GUI::ListViewComboCtrl->new($self, -1, "", wxDefaultPosition, wxDefaultSize, []);
+                #$choice->SetFont($Slic3r::GUI::small_font);
                 $self->{preset_choosers}{$group} = [$choice];
                 EVT_CHOICE($choice, $choice, sub { $self->_on_select_preset($group, @_) });
                 $presets->Add($text, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL | wxRIGHT, 4);
-                $presets->Add($choice, 1, wxALIGN_CENTER_VERTICAL | wxEXPAND | wxBOTTOM, 8);
+                $presets->Add($choice, 1, wxALIGN_CENTER_VERTICAL | wxEXPAND | wxBOTTOM, 1);
             }
         }
         
@@ -417,7 +418,14 @@ sub update_presets {
     foreach my $choice (@{ $self->{preset_choosers}{$group} }) {
         my $sel = $choice->GetSelection;
         $choice->Clear;
-        $choice->Append($_) for @$items;
+        foreach my $item (@$items) {
+            if ($group eq 'filament') {
+                my $bitmap = Wx::Bitmap->new(16,16);
+                $choice->Append($item, $bitmap);
+            } else {
+                $choice->AppendString($item);
+            }
+        }
         $choice->SetSelection($sel) if $sel <= $#$items;
     }
     $self->{preset_choosers}{$group}[0]->SetSelection($selected);
