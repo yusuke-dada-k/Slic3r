@@ -1,4 +1,4 @@
-use Test::More tests => 14;
+use Test::More tests => 19;
 use strict;
 use warnings;
 
@@ -131,6 +131,30 @@ if (0) {
     
     my $perimeter = $expolygon->contour->split_at_first_point->length;
     ok sum(map $_->length, @$polylines) > $perimeter/2/4*3, 'medial axis has a reasonable length';
+}
+
+{
+    my $expolygon = Slic3r::ExPolygon->new(Slic3r::Polygon->new(
+        [91294454,31032190],[11294481,31032190],[11294481,29967810],[44969182,29967810],[89909960,29967808],[91294454,29967808]
+    ));
+    my $polylines = $expolygon->medial_axis(1871238, 500000);
+    
+    is scalar(@$polylines), 1, 'medial axis is a single polyline';
+    my $polyline = $polylines->[0];
+    
+    my $expected_y = $expolygon->bounding_box->center->y; #;;
+    ok abs(sum(map $_->y, @$polyline) / @$polyline - $expected_y) < scaled_epsilon, #,,
+        'medial axis is horizontal and is centered';
+    
+    # order polyline from left to right
+    $polyline->reverse if $polyline->first_point->x > $polyline->last_point->x;
+    
+    my $polyline_bb = $polyline->bounding_box;
+    is $polyline->first_point->x, $polyline_bb->x_min, 'expected x_min';
+    is $polyline->last_point->x,  $polyline_bb->x_max, 'expected x_max';
+    
+    is_deeply [ map $_->x, @$polyline ], [ sort map $_->x, @$polyline ],
+        'medial axis is not self-overlapping';
 }
 
 __END__
