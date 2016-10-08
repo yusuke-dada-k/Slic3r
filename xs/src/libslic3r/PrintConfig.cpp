@@ -317,6 +317,35 @@ PrintConfigDef::build_def() {
     Options["fill_pattern"].enum_labels.push_back("Archimedean Chords");
     Options["fill_pattern"].enum_labels.push_back("Octagram Spiral");
 
+    Options["fill_rectilinear_anglestep_enable"].type = coBool;
+    Options["fill_rectilinear_anglestep_enable"].label = "Enable";
+    Options["fill_rectilinear_anglestep_enable"].category = "Infill";
+    Options["fill_rectilinear_anglestep_enable"].tooltip = "Enable fill pattern angle step option for Rectilinear.";
+    Options["fill_rectilinear_anglestep_enable"].cli = "fill-rectilinear-anglestep-enable!";
+
+    Options["fill_rectilinear_anglestep"].type = coInt;
+    Options["fill_rectilinear_anglestep"].label = "";
+    Options["fill_rectilinear_anglestep"].category = "Infill";
+    Options["fill_rectilinear_anglestep"].tooltip = "Experimental option to specify rotate angle step.";
+    Options["fill_rectilinear_anglestep"].sidetext = "°";
+    Options["fill_rectilinear_anglestep"].cli = "fill-rectilinear-anglestep=i";
+    Options["fill_rectilinear_anglestep"].min = 1;
+    Options["fill_rectilinear_anglestep"].max = 179;
+
+    Options["fill_rectilinear_linespace_enable"].type = coBool;
+    Options["fill_rectilinear_linespace_enable"].label = "Enable";
+    Options["fill_rectilinear_linespace_enable"].category = "Infill";
+    Options["fill_rectilinear_linespace_enable"].tooltip = "Enable fill pattern line space option for Rectilinear. If you specified this then we ignore 'Fill density' value.";
+    Options["fill_rectilinear_linespace_enable"].cli = "fill-rectilinear-linespace-enable!";
+
+    Options["fill_rectilinear_linespace"].type = coFloat;
+    Options["fill_rectilinear_linespace"].label = "";
+    Options["fill_rectilinear_linespace"].category = "Infill";
+    Options["fill_rectilinear_linespace"].tooltip = "Experimental option to specify line space for Rectilinear.";
+    Options["fill_rectilinear_linespace"].sidetext = "mm";
+    Options["fill_rectilinear_linespace"].cli = "fill-rectilinear-linespace=f";
+    Options["fill_rectilinear_linespace"].min = 0;
+
     Options["first_layer_acceleration"].type = coFloat;
     Options["first_layer_acceleration"].label = "First layer";
     Options["first_layer_acceleration"].tooltip = "This is the acceleration your printer will use for first layer. Set zero to disable acceleration control for first layer.";

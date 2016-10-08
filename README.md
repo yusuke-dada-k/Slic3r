@@ -13,6 +13,8 @@ with Mach3, LinuxCNC and Machinekit controllers.
 See the [project homepage](http://slic3r.org/) at slic3r.org and the
 [manual](http://manual.slic3r.org/) for more information.
 
+In addiotion, Yusuke added some options, see the [Yusuke's GitHub](https://github.com/yusuke-dada-k/Slic3r).
+
 ### What language is it written in?
 
 The core geometric algorithms and data structures are written in C++,
@@ -374,6 +376,20 @@ The author of the Silk icon set is Mark James.
                             Temperature difference to be applied when an extruder is not active and
                             --ooze-prevention is enabled (default: -5)
 
+       Experimental options for Rectilinear by Yusuke:
+        --fill_rectilinear_anglestep_enable
+                            Enable fill pattern angle step option (--fill_rectilinear_stepangle)
+                            for Rectilinear (default: no)
+        --fill_rectilinear_stepangle
+                            Experimental option to specify rotate angle step
+                            (default: 90)
+        --fill_rectilinear_linespace_enable
+                            Enable fill pattern line space option for Rectilinear,
+                            if you specified this then we ignore 'Fill density' value (--fill-density)
+                            (default: no)
+        --fill_rectilinear_linespace 
+                            Experimental option to specify line space for Rectilinear
+                            (default: 1.2)
 
 If you want to change a preset file, just do
 

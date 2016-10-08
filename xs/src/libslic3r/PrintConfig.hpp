@@ -190,6 +190,12 @@ class PrintRegionConfig : public virtual StaticPrintConfig
     ConfigOptionInt                 fill_angle;
     ConfigOptionPercent             fill_density;
     ConfigOptionEnum<InfillPattern> fill_pattern;
+
+    ConfigOptionBool                fill_rectilinear_anglestep_enable;
+    ConfigOptionInt                 fill_rectilinear_anglestep;
+    ConfigOptionBool                fill_rectilinear_linespace_enable;
+    ConfigOptionFloat               fill_rectilinear_linespace;
+
     ConfigOptionFloat               gap_fill_speed;
     ConfigOptionInt                 infill_extruder;
     ConfigOptionFloatOrPercent      infill_extrusion_width;
@@ -226,6 +232,12 @@ class PrintRegionConfig : public virtual StaticPrintConfig
         this->fill_angle.value                                   = 45;
         this->fill_density.value                                 = 20;
         this->fill_pattern.value                                 = ipHoneycomb;
+
+        this->fill_rectilinear_anglestep_enable.value            = false;
+        this->fill_rectilinear_anglestep.value                   = 90;
+        this->fill_rectilinear_linespace_enable.value            = false;
+        this->fill_rectilinear_linespace.value                   = 1.2;
+
         this->gap_fill_speed.value                               = 20;
         this->infill_extruder.value                              = 1;
         this->infill_extrusion_width.value                       = 0;
@@ -269,6 +281,12 @@ class PrintRegionConfig : public virtual StaticPrintConfig
         if (opt_key == "fill_angle")                                 return &this->fill_angle;
         if (opt_key == "fill_density")                               return &this->fill_density;
         if (opt_key == "fill_pattern")                               return &this->fill_pattern;
+
+        if (opt_key == "fill_rectilinear_anglestep_enable")          return &this->fill_rectilinear_anglestep_enable;
+        if (opt_key == "fill_rectilinear_anglestep")                 return &this->fill_rectilinear_anglestep;
+        if (opt_key == "fill_rectilinear_linespace_enable")          return &this->fill_rectilinear_linespace_enable;
+        if (opt_key == "fill_rectilinear_linespace")                 return &this->fill_rectilinear_linespace;
+
         if (opt_key == "gap_fill_speed")                             return &this->gap_fill_speed;
         if (opt_key == "infill_extruder")                            return &this->infill_extruder;
         if (opt_key == "infill_extrusion_width")                     return &this->infill_extrusion_width;

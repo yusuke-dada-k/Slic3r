@@ -8,13 +8,38 @@ has '_min_spacing'          => (is => 'rw');
 has '_line_spacing'         => (is => 'rw');
 has '_diagonal_distance'    => (is => 'rw');
 has '_line_oscillation'     => (is => 'rw');
+has '_angles'               => (is => 'rw');
 
-use Slic3r::Geometry qw(scale unscale scaled_epsilon);
+use Slic3r::Geometry qw(PI scale unscale scaled_epsilon);
 use Slic3r::Geometry::Clipper qw(intersection_pl);
+
+my @static_angles_;
+
+sub angles () {
+    my $self = shift;
+    return $self->_angles;
+}
 
 sub fill_surface {
     my $self = shift;
     my ($surface, %params) = @_;
+
+    # create an array of angles
+    {
+        # Note:
+	# It will have effects for top and bottom layers after
+	# generated angles here.
+        @static_angles_ = (0);
+        my $step = $params{ext_angle_step};
+	if ($step) {
+            my $cur = $static_angles_[$#static_angles_] + $step; # tail + step
+            while ($cur < PI) {
+                push(@static_angles_, $cur);
+                $cur = $static_angles_[$#static_angles_] + $step;
+            }
+            $self->_angles(\@static_angles_);
+        }
+    }
     
     # rotate polygons so that we can work with vertical lines here
     my $expolygon = $surface->expolygon->clone;
@@ -35,6 +60,22 @@ sub fill_surface {
         ));
         $self->spacing(unscale $self->_line_spacing);
     } else {
+        # Note:
+	# It will not have effects for top and bottom layers after
+	# generated line spaces here.
+        {
+	    my $lspace = $params{ext_line_space};
+	    if ($lspace) {
+                my $scaled_ext_line_space = scale $lspace;
+                if (0 < $scaled_ext_line_space && $self->_min_spacing <= $scaled_ext_line_space) {
+                    # use specified line space
+                    $self->_line_spacing($scaled_ext_line_space);
+                    # update again
+                    $self->_diagonal_distance($self->_line_spacing * 2);
+                    $self->_line_oscillation($self->_line_spacing - $self->_min_spacing);  # only for Line infill
+                }
+            }
+        }
         # extend bounding box so that our pattern will be aligned with other layers
         $bounding_box->merge_point(Slic3r::Point->new(
             $bounding_box->x_min - ($bounding_box->x_min % $self->_line_spacing),

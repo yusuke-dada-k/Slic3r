@@ -531,7 +531,22 @@ $j
     --standby-temperature-delta
                         Temperature difference to be applied when an extruder is not active and
                         --ooze-prevention is enabled (default: $config->{standby_temperature_delta})
-    
+
+   Experimental options for Rectilinear by Yusuke:
+    --fill-rectilinear-anglestep-enable
+                        Enable fill pattern angle step option (--fill-rectilinear-anglestep)
+                        for Rectilinear (default: no)
+    --fill-rectilinear-anglestep
+                        Experimental option to specify rotate angle step
+                        (default: $config->{fill_rectilinear_anglestep})
+    --fill-rectilinear-linespace-enable
+                        Enable fill pattern line space option for Rectilinear,
+                        if you specified this then we ignore 'Fill density' value (--fill-density)
+                        (default: no)
+    --fill-rectilinear-linespace
+                        Experimental option to specify line space for Rectilinear
+                        (default: $config->{fill_rectilinear_linespace})
+
 EOF
     exit ($exit_code || 0);
 }

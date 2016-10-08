@@ -461,6 +461,10 @@ sub build {
         extra_perimeters avoid_crossing_perimeters thin_walls overhangs
         seam_position external_perimeters_first
         fill_density fill_pattern external_fill_pattern
+	fill_rectilinear_anglestep_enable
+	fill_rectilinear_anglestep
+	fill_rectilinear_linespace_enable
+	fill_rectilinear_linespace
         infill_every_layers infill_only_where_needed
         solid_infill_every_layers fill_angle solid_infill_below_area 
         only_retract_when_crossing_perimeters infill_first
@@ -536,6 +540,34 @@ sub build {
             $optgroup->append_single_option_line('fill_density');
             $optgroup->append_single_option_line('fill_pattern');
             $optgroup->append_single_option_line('external_fill_pattern');
+        }
+        {
+            my $optgroup = $page->new_optgroup('EXPERIMENTAL: Alternative options for Rectilinear by Yusuke');
+
+            my $line;
+	    my $option;
+
+	    $line = Slic3r::GUI::OptionsGroup::Line->new(
+                label => 'Angle step',
+            );
+	    $option = $optgroup->get_option('fill_rectilinear_anglestep_enable');
+	    $option->width(60);
+            $line->append_option($option);
+	    $option = $optgroup->get_option('fill_rectilinear_anglestep');
+	    $option->width(60);
+            $line->append_option($option);
+	    $optgroup->append_line($line);
+
+	    $line = Slic3r::GUI::OptionsGroup::Line->new(
+                label => 'Line space',
+            );
+	    $option = $optgroup->get_option('fill_rectilinear_linespace_enable');
+	    $option->width(60);
+            $line->append_option($option);
+	    $option = $optgroup->get_option('fill_rectilinear_linespace');
+	    $option->width(60);
+            $line->append_option($option);
+	    $optgroup->append_line($line);
         }
         {
             my $optgroup = $page->new_optgroup('Reducing printing time');

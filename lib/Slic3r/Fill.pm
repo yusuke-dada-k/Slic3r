@@ -236,12 +236,23 @@ sub make_fill {
         $f->z($layerm->print_z);
         $f->angle(deg2rad($layerm->config->fill_angle));
         $f->loop_clipping(scale($flow->nozzle_diameter) * &Slic3r::LOOP_CLIPPING_LENGTH_OVER_NOZZLE_DIAMETER);
-        
+
+        my $rectilinear_anglestep = PI/2;
+        if ($layerm->config->fill_rectilinear_anglestep_enable) {
+            $rectilinear_anglestep = deg2rad($layerm->config->fill_rectilinear_anglestep);
+        }
+        my $rectilinear_linespace = 0;
+        if ($layerm->config->fill_rectilinear_linespace_enable) {
+            $rectilinear_linespace = $layerm->config->fill_rectilinear_linespace;
+        }
+
         # apply half spacing using this flow's own spacing and generate infill
         my @polylines = map $f->fill_surface(
             $_,
             density         => $density/100,
             layer_height    => $h,
+            ext_angle_step  => $rectilinear_anglestep,  # in radians
+            ext_line_space  => $rectilinear_linespace,  # in unscaled coordinates
         ), @{ $surface->offset(-scale($f->spacing)/2) };
         
         next unless @polylines;
